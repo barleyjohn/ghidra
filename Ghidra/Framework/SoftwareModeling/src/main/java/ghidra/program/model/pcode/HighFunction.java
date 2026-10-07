@@ -25,6 +25,8 @@ import java.util.List;
 import ghidra.program.database.function.FunctionDB;
 import ghidra.program.database.symbol.CodeSymbol;
 import ghidra.program.model.address.*;
+import ghidra.program.model.data.AbstractIntegerDataType;
+import ghidra.program.model.data.DataType;
 import ghidra.program.model.lang.CompilerSpec;
 import ghidra.program.model.lang.Language;
 import ghidra.program.model.listing.*;
@@ -413,6 +415,17 @@ public class HighFunction extends PcodeSyntaxTree {
 		catch (InvalidInputException e) {
 			throw new DecoderException("Bad storage node", e);
 		}
+	}
+
+	/**
+	 * Produce a HighSymbol for a HighVariable in the unique address space
+	 * @param vn is the HighVariable to convert
+	 * @return a HighSymbol for the HighVariable
+	 */
+	public HighSymbol uniqueSymbol(HighVariable hv) {
+		DynamicHash dh = new DynamicHash(hv.getRepresentative(), hv.getHighFunction());
+		return localSymbols.newDynamicSymbol(0, "", hv.getDataType(),
+				dh.getHash(), dh.getAddress());
 	}
 
 	/**
